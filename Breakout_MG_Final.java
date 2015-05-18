@@ -64,7 +64,7 @@ public class Breakout_MG_Final extends GraphicsProgram {
 /**Random number generator for vx*/   
     private RandomGenerator rgen = RandomGenerator.getInstance();
  
-/** Animation delay or paust time between ball moves */   
+/** Animation delay or pause time between ball moves */   
     private static final int DELAY = 10;
  
 /* Method: run() */
@@ -95,7 +95,7 @@ public class Breakout_MG_Final extends GraphicsProgram {
 			setSize(APPLICATION_WIDTH + BRICK_SEP, APPLICATION_HEIGHT);
 		}
     	
-        drawBricks(APPLICATION_WIDTH/2, BRICK_Y_OFFSET);
+        drawBricks(APPLICATION_WIDTH / 2, BRICK_Y_OFFSET);
         drawPaddle();
         drawBall();
     }
@@ -106,12 +106,12 @@ public class Breakout_MG_Final extends GraphicsProgram {
     //drawing all the bricks necessary for the game
     private void drawBricks(double cx, double cy) {                
  
-        /*need to have several columns in each row
-         * so there need to be two for loops, 
-         * one for loop for the rows and one for loop for the columns.
+        /* We need to have several columns in each row
+         * so there need to be two for loops; 
+         * one loop for the rows and one loop for the columns.
          */
  
-        for( int row = 0; row < NBRICK_ROWS; row++ ) {
+        for (int row = 0; row < NBRICK_ROWS; row++) {
  
             for (int column = 0; column < NBRICKS_PER_ROW; column++) {
  
@@ -125,20 +125,20 @@ public class Breakout_MG_Final extends GraphicsProgram {
                  *     add a separation width
                  */
  
-                double    x = cx - (NBRICKS_PER_ROW*BRICK_WIDTH)/2 - ((NBRICKS_PER_ROW-1)*BRICK_SEP)/2 + column*BRICK_WIDTH + column*BRICK_SEP;
+                double x = cx - (NBRICKS_PER_ROW * BRICK_WIDTH) / 2 - ((NBRICKS_PER_ROW - 1) * BRICK_SEP) / 2 + column * BRICK_WIDTH + column * BRICK_SEP;
  
                 /* To get the y coordinate of the starting height:
                  *     start at the given length from the top for the first row,
                  *     then add a brick height and a brick separation for each of the following rows
                  */
  
-                double    y = cy + row*BRICK_HEIGHT + row*BRICK_SEP;
+                double y = cy + row * BRICK_HEIGHT + row * BRICK_SEP;
  
-                brick = new GRect( x , y , BRICK_WIDTH , BRICK_HEIGHT );
+                brick = new GRect(x, y, BRICK_WIDTH, BRICK_HEIGHT);
                 add (brick);
                 brick.setFilled(true);
  
-                //Setting colors depending on which row the bricks are in
+                // Set colors depending on which row the bricks are in
  
                 if (row < 2) {
                     brick.setColor(Color.RED);
@@ -159,16 +159,17 @@ public class Breakout_MG_Final extends GraphicsProgram {
         }
     }
  
-    //adding individual paddle object
+    // Add individual paddle object
     private GRect paddle;
  
-    //paddle set-up
+    // Paddle set-up
     private void drawPaddle() {
-        //starting the paddle in the middle of the screen
-        double x = getWidth()/2 - PADDLE_WIDTH/2; 
-        //the paddle height stays consistent throughout the game
-        //need to make sure to subtract the PADDLE_HEIGHT, 
-        //since the rectangle gets drawn from the top left corner
+        // Starting the paddle in the middle of the screen
+        double x = getWidth() / 2 - PADDLE_WIDTH / 2; 
+        /* The paddle height stays consistent throughout the game.
+         * We need to make sure to subtract the PADDLE_HEIGHT, 
+         * since the rectangle gets drawn from the top left corner
+         */
         double y = getHeight() - PADDLE_Y_OFFSET - PADDLE_HEIGHT;
         paddle = new GRect (x, y, PADDLE_WIDTH, PADDLE_HEIGHT);
         paddle.setFilled(true);
@@ -176,7 +177,7 @@ public class Breakout_MG_Final extends GraphicsProgram {
         addMouseListeners();
     }
  
-    //making the mouse track the paddle
+    // Make the mouse track the paddle
     public void mouseMoved(MouseEvent e) {
         /* The mouse tracks the middle point of the paddle. 
          * If the middle point of the paddle is between half paddle width of the screen
@@ -184,19 +185,19 @@ public class Breakout_MG_Final extends GraphicsProgram {
          * the x location of the paddle is set at where the mouse is minus half a paddle's width, 
          * and the height remains the same
          */
-        if ((e.getX() < getWidth() - PADDLE_WIDTH/2) && (e.getX() > PADDLE_WIDTH/2)) {
-            paddle.setLocation(e.getX() - PADDLE_WIDTH/2, getHeight() - PADDLE_Y_OFFSET - PADDLE_HEIGHT);
+        if ((e.getX() < getWidth() - PADDLE_WIDTH / 2) && (e.getX() > PADDLE_WIDTH / 2)) {
+            paddle.setLocation(e.getX() - PADDLE_WIDTH / 2, getHeight() - PADDLE_Y_OFFSET - PADDLE_HEIGHT);
         }
  
     }
  
-    //adding an individual ball object
+    // Add an individual ball object
     private GOval ball;
  
-    //ball set-up
+    // Ball set-up
     private void drawBall() {
-        double x = getWidth()/2 - BALL_RADIUS;
-        double y = getHeight()/2 - BALL_RADIUS;
+        double x = getWidth() / 2 - BALL_RADIUS;
+        double y = getHeight() / 2 - BALL_RADIUS;
         ball = new GOval(x, y, BALL_RADIUS, BALL_RADIUS);
         ball.setFilled(true);
         add(ball);
@@ -210,7 +211,7 @@ public class Breakout_MG_Final extends GraphicsProgram {
             if (ball.getY() >= getHeight()) {
                 break;
             }
-            if(brickCounter == 0) {
+            if (brickCounter == 0) {
                 break;
             }
         }
@@ -227,40 +228,47 @@ public class Breakout_MG_Final extends GraphicsProgram {
  
     private void moveBall() {
         ball.move(vx, vy);
-        //check for walls
-        //need to get vx and vy at the point closest to 0 or the other edge
-        if ((ball.getX() - vx <= 0 && vx < 0 )|| (ball.getX() + vx >= (getWidth() - BALL_RADIUS*2) && vx > 0)) {
+        /* Check for walls.
+         * We need to get vx and vy at the point closest to 0 or the other edge
+         */
+        if ((ball.getX() - vx <= 0 && vx < 0 ) || (ball.getX() + vx >= (getWidth() - BALL_RADIUS * 2) && vx > 0)) {
             vx = -vx;
         }
-        //We don't need to check for the bottom wall, since the ball can fall through the wall at that point
+        
+        /* We don't need to check for the bottom wall, 
+         * since the ball can fall through the wall at that point
+         */
         if ((ball.getY() - vy <= 0 && vy < 0 )) {
             vy = -vy;
         }
  
-        //check for other objects
+        // Check for other objects
         GObject collider = getCollidingObject();
         if (collider == paddle) {
-            /* We need to make sure that the ball only bounces off the top part of the paddle  
-             * and also that it doesn't &quot;stick&quot; to it if different sides of the ball hit the paddle quickly and get the ball &quot;stuck&quot; on the paddle.
-             * I ran &quot;println (&quot;vx: &quot; + vx + &quot;, vy: &quot; + vy + &quot;, ballX: &quot; + ball.getX() + &quot;, ballY: &quot; +ball.getY());&quot;
+            
+        	/* We need to make sure that the ball only bounces off the top part of the paddle  
+             * and also that it doesn't "stick" to it if different sides of the ball hit the paddle quickly and get the ball "stuck" on the paddle.
+             * I ran "println ("vx: " + vx + ", vy: " + vy + ", ballX: " + ball.getX() + ", ballY: " + ball.getY());"
              * and found that the ball.getY() changes by 4 every time, instead of 1,
              * so it never reaches exactly the the height at which the ball hits the paddle (paddle height + ball height), 
              * therefore, I estimate the point to be greater or equal to the height at which the ball hits the paddle, 
              * but less than the height where the ball hits the paddle minus 4. 
              */
- 
-            if(ball.getY() >= getHeight() - PADDLE_Y_OFFSET - PADDLE_HEIGHT - BALL_RADIUS*2 && ball.getY() < getHeight() - PADDLE_Y_OFFSET - PADDLE_HEIGHT - BALL_RADIUS*2 + 4) {
+            if (ball.getY() >= getHeight() - PADDLE_Y_OFFSET - PADDLE_HEIGHT - BALL_RADIUS*2 && ball.getY() < getHeight() - PADDLE_Y_OFFSET - PADDLE_HEIGHT - BALL_RADIUS*2 + 4) {
                 vy = -vy;    
             }
         }
-        //since we lay down a row of bricks, the last brick in the brick wall is assigned the value brick.
-        //so we narrow it down by saying that the collier does not equal to a paddle or null, 
-        //so all that is left is the brick
+        
+        /* Since we lay down a row of bricks, the last brick in the brick wall is assigned the value brick.
+         * so we narrow it down by saying that the collier does not equal to a paddle or null, 
+         * so all that is left is the brick
+         */
         else if (collider != null) {
             remove(collider); 
             brickCounter--;
             vy = -vy;
         }
+        
         pause (DELAY);
     }
  
@@ -278,8 +286,10 @@ public class Breakout_MG_Final extends GraphicsProgram {
         else if(getElementAt((ball.getX() + BALL_RADIUS*2), (ball.getY() + BALL_RADIUS*2)) != null ){
              return getElementAt(ball.getX() + BALL_RADIUS*2, ball.getY() + BALL_RADIUS*2);
           }
-        //need to return null if there are no objects present
+        
+        // We need to return null if there are no objects present
         else{
+        	
              return null;
           }
  
