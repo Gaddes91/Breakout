@@ -70,8 +70,20 @@ public class Breakout_MG_Final extends GraphicsProgram {
 /* Method: run() */
 /** Runs the Breakout program. */
     public void run() {
+    	
+		// Resize canvas regardless of original size
+		if(true) {
+			// Increase size of canvas so that game will fit
+			setSize(APPLICATION_WIDTH + BRICK_SEP, APPLICATION_HEIGHT);
+		}
+		
+		printOpeningMessage();
+    	print321();
+    	
         for(int i=0; i < NTURNS; i++) {
-            setUpGame();
+        	
+
+            setUpGame();          
             playGame();
             if(brickCounter == 0) {
                 ball.setVisible(false);
@@ -81,6 +93,14 @@ public class Breakout_MG_Final extends GraphicsProgram {
             if(brickCounter > 0) {
                 removeAll();
             }
+            
+            /* Check we have not entered a "game over" state, i.e. the user still has lives remaining.
+             * If so, prompt the user to click to continue the game.
+             */
+            if (i < NTURNS - 1) {
+                clickToContinue();
+            }
+
         }
         if(brickCounter > 0) {
             printGameOver();
@@ -88,12 +108,6 @@ public class Breakout_MG_Final extends GraphicsProgram {
     }
  
     private void setUpGame() {
-    	
-		// Resize canvas regardless of original size
-		if(true) {
-			// Increase size of canvas so that game will fit
-			setSize(APPLICATION_WIDTH + BRICK_SEP, APPLICATION_HEIGHT);
-		}
     	
         drawBricks(APPLICATION_WIDTH / 2, BRICK_Y_OFFSET);
         drawPaddle();
@@ -188,7 +202,6 @@ public class Breakout_MG_Final extends GraphicsProgram {
         if ((e.getX() < getWidth() - PADDLE_WIDTH / 2) && (e.getX() > PADDLE_WIDTH / 2)) {
             paddle.setLocation(e.getX() - PADDLE_WIDTH / 2, getHeight() - PADDLE_Y_OFFSET - PADDLE_HEIGHT);
         }
- 
     }
  
     // Add an individual ball object
@@ -204,7 +217,7 @@ public class Breakout_MG_Final extends GraphicsProgram {
     }
  
     private void playGame() {
-        waitForClick();
+        //waitForClick();
         getBallVelocity();
         while (true) {
             moveBall();
@@ -223,7 +236,6 @@ public class Breakout_MG_Final extends GraphicsProgram {
         if (rgen.nextBoolean(0.5)) {
             vx = -vx; 
         }
- 
     }
  
     private void moveBall() {
@@ -292,9 +304,77 @@ public class Breakout_MG_Final extends GraphicsProgram {
         	
              return null;
           }
- 
     }
- 
+    
+    // The following methods contain messages etc.
+    
+	/* The following method firstly creates a set of messages and then moves
+	 * each of them to the correct location on the canvas. */
+    private void printOpeningMessage() {
+    	
+    	/* N.B. For some reason, even though getWidth() was returning the correct value,
+    	 * the "welcome" label was not being positioned correctly on the screen.
+    	 * To rectify this, the formula was edited as seen below. 
+    	 */
+    	GLabel welcome = new GLabel ("Let the game BEGIN!", (APPLICATION_WIDTH + BRICK_SEP)/2, APPLICATION_HEIGHT/2);
+    	welcome.move(-welcome.getWidth()/2, -welcome.getHeight());
+    	
+    	GLabel instruction = new GLabel ("Click to continue...", getWidth()/2, getHeight()/2);
+    	instruction.move(-instruction.getWidth()/2, 50);
+    	
+    	add (welcome);
+    	add (instruction);
+    	
+    	// This click allows the method to continue, i.e. the labels can be removed
+    	waitForClick();
+    	
+    	// Remove both labels from canvas so the game can continue
+    	remove (welcome);
+    	remove (instruction);
+    }
+    
+    // The following method ensures the user must click to continue the game each time they lose a life
+    private void clickToContinue() {
+    	
+    	GLabel instruction = new GLabel ("Click to continue...", getWidth()/2, getHeight()/2);
+    	instruction.move(-instruction.getWidth()/2, 50);
+    	add (instruction);
+    	
+    	waitForClick();
+    	
+    	remove (instruction);
+    }
+    
+    // Print countdown 3..2..1
+    private void print321() {
+    	
+    	// Create the three labels and place them, initially, at the top left of the canvas 
+    	GLabel three = new GLabel ("3...", 0, 0);
+    	GLabel two = new GLabel ("2...", 0, 0);
+    	GLabel one = new GLabel ("1...", 0, 0);
+    	
+    	/* The label "2..." will be centered on the canvas.
+    	 * Other labels are set out in relation to label "2..."
+    	 */
+    	two.move(getWidth()/2 - two.getWidth()/2, getHeight()/2 - two.getHeight());
+    	three.move(getWidth()/2 - two.getWidth()/2 - three.getWidth(), getHeight()/2 - two.getHeight());
+    	one.move(getWidth()/2 + two.getWidth()/2, getHeight()/2 - two.getHeight());
+    	
+    	// Add labels to canvas, one at a time
+    	add (three);
+    	// Pause for effect
+    	pause (500);
+    	add (two);
+    	pause (500);
+    	add (one);
+    	pause (500);
+    	
+    	// Remove labels from canvas so the game can begin!
+    	remove(three);
+    	remove(two);
+    	remove(one);
+    }
+    
     private void printGameOver() {
         GLabel gameOver = new GLabel ("Game Over", getWidth()/2, getHeight()/2);
         gameOver.move(-gameOver.getWidth()/2, -gameOver.getHeight());
@@ -305,7 +385,7 @@ public class Breakout_MG_Final extends GraphicsProgram {
     private int brickCounter = 100;
  
     private void printWinner() {
-        GLabel Winner = new GLabel ("Winner!!", getWidth()/2, getHeight()/2);
+        GLabel Winner = new GLabel ("Congratulations!!!", getWidth()/2, getHeight()/2);
         Winner.move(-Winner.getWidth()/2, -Winner.getHeight());
         Winner.setColor(Color.RED);
         add (Winner);
